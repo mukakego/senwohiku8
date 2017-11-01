@@ -21,7 +21,7 @@ int yoko = 16;
 int tate = 9;
 
 void setup() {
-  
+
   noSmooth();
 
   size(1280, 720);
@@ -63,7 +63,6 @@ void setup() {
         counter++;
       }
     }
-
     center.bnkt = bunkatsu(center, hoge);
   }
 
@@ -73,6 +72,9 @@ void setup() {
   spot = new ten[_yoko*_tate];
 
   for (int i = 0; i < spot.length; i++) {
+    //int f = i/_tate;
+    //int g = i%_tate;
+    //int i = f * _tate + g;
     spot[i] = new ten(
       (i/_tate)*(width /_yoko), 
       (i%_tate)*(height/_tate)
@@ -90,13 +92,12 @@ void setup() {
     }
     int ichigo = nearpoint.spot.length;
     ten[] hisui = new ten[ichigo+1];
-    for (int j=0; j<ichigo; j++) {
+    for (int j=0; j<ichigo; j++) 
       hisui[j] = nearpoint.spot[j];
-    }
     hisui[ichigo] = spot[i];
     nearpoint.spot = hisui;
   }
-  
+
   int gosa = 703;
 
   player.play();
@@ -119,17 +120,13 @@ void draw() {
     int hoge = specSize/4;
     for (int j = 0; j <yoko; j++) {
       for (int i = 0; i < hoge/yoko; i++)
-      {
         oozappa[j] += fft.getBand(j*hoge/yoko+i) * 3;
-      }
       oozappa[j] = constrain(oozappa[j], 0, height)/(height/tate);
     }
   }
 
-  if (myMovie.available()) {
-    myMovie.read();
-  }
-  
+  if (myMovie.available())myMovie.read();
+
   image(myMovie, 0, 0, width, height);
 
   loadPixels();
