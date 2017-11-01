@@ -1,11 +1,9 @@
-ten[] allpoint;
-ArrayList<ten> kakutei = new ArrayList();
-ArrayList<ten> online = new ArrayList();
-sen[] takusan;
+ten[] bunkatsu(ten center, ten[] others) {
 
-ten[] bunkatsu(ten center,ten[] others){
-  kakutei.clear();
-  online.clear();
+  sen[] takusan;
+  ten[] online;
+  ten[] allpoint;
+  ArrayList<ten> kakutei = new ArrayList();
 
   int nagasa = others.length+waku.length;
 
@@ -27,7 +25,8 @@ ten[] bunkatsu(ten center,ten[] others){
     int apcount = 0;
     for (int i = 0; i < nagasa; i++) {
       for (int j = i + 1; j < nagasa; j++) {
-        allpoint[apcount] = cross(takusan[i], takusan[j]);
+        allpoint[apcount] = 
+          cross(takusan[i], takusan[j]);
         apcount++;
       }
     }
@@ -53,32 +52,31 @@ ten[] bunkatsu(ten center,ten[] others){
     }
   }
 
-  resetonline(nearline);
+  online = resetonline(nearline, allpoint);
 
   {
-    float distplus = 1145141919, distminus = -1145141919;
+    float distplus = 1145141919, 
+      distminus = -1145141919;
     int nearplus = -1, nearminus = -1;
-    for (int i = 0; i<online.size(); i++) {
-      ten matsutaka = online.get(i)
-        , justin = nearline.suiten;
+
+    ten justin = nearline.suiten;
+    for (int i = 0; i<online.length; i++) {
+      ten matsutaka = online[i];
 
       float toriel = 
-        matsutaka.x - justin.x + matsutaka.y - justin.y;
-      if (toriel > 0) {
-        if (toriel < distplus) {
-          nearplus = i;
-          distplus = toriel;
-        }
-      } else {
-        if (toriel > distminus) {
-          nearminus = i;
-          distminus = toriel;
-        }
+        matsutaka.x - justin.x + 
+        matsutaka.y - justin.y;
+      if (toriel > 0 & toriel < distplus) {
+        nearplus = i;
+        distplus = toriel;
+      } else if (toriel < 0 & toriel > distminus) {
+        nearminus = i;
+        distminus = toriel;
       }
     }
 
-    if (nearplus!=-1)kakutei.add(online.get(nearplus));
-    if (nearminus!=-1)kakutei.add(online.get(nearminus));
+    if (nearplus!=-1)kakutei.add(online[nearplus]);
+    if (nearminus!=-1)kakutei.add(online[nearminus]);
   }
 
   sen temp = nearline;
@@ -87,11 +85,12 @@ ten[] bunkatsu(ten center,ten[] others){
   while (true) {
     ten uzuki = kakutei.get(kakutei.size()-1);
 
-    temp = uzuki.parent[0]==temp?uzuki.parent[1]:uzuki.parent[0];
+    temp = uzuki.parent[0]==temp
+      ?uzuki.parent[1]:uzuki.parent[0];
 
-    resetonline(temp);
+    online = resetonline(temp, allpoint);
 
-    ten[] cookie = getneighbor(uzuki);
+    ten[] cookie = getneighbor(uzuki, online);
     if (cookie.length == 0)break;
 
     if (cookie[1]==null) {
@@ -112,22 +111,29 @@ ten[] bunkatsu(ten center,ten[] others){
   return kakutei.toArray(new ten[kakutei.size()]);
 }
 
-ten[] getneighbor(ten _a) {
-  int you = online.indexOf(_a);
+ten[] getneighbor(ten _a, ten[] online) {
+  int you = -1;
+  for (int i = 0; i < online.length; i++) {
+    if (online[i]==_a) {
+      you = i;
+      break;
+    }
+  }
   if (you==-1)return new ten[0];
   ten[] going = new ten[2];
   int n = 0;
   int claris = 0;
-  for (int j = 0; j<online.size(); j++) {
-    ten papyrus = online.get(j);
+  for (int j = 0; j<online.length; j++) {
+    ten papyrus = online[j];
     if (_a.x + _a.y > papyrus.x + papyrus.y)n++;
   }
-  for (int i = 0; i<online.size(); i++) {
+  for (int i = 0; i<online.length; i++) {
     int count = 0;
-    ten sans = online.get(i);
-    for (int j = 0; j<online.size(); j++) {
-      ten papyrus = online.get(j);
-      if (sans.x + sans.y > papyrus.x + papyrus.y)count++;
+    ten sans = online[i];
+    for (int j = 0; j<online.length; j++) {
+      ten papyrus = online[j];
+      if (sans.x + sans.y > papyrus.x + papyrus.y)
+        count++;
     }
     if (count == n - 1 | count == n + 1) {
       going[claris] = sans;
@@ -138,15 +144,18 @@ ten[] getneighbor(ten _a) {
   return going;
 }
 
-void resetonline(sen _nearline) {
-  online.clear();
-  for (int i = 0; i<allpoint.length; i++) {
-    ten matsutaka = allpoint[i];
-    if (matsutaka!=null) {
+ten[] resetonline(sen _nearline, ten[] allpoint) {
+  ten[] ketsudeka = new ten[allpoint.length];
+  int count = 0;
+  for (ten matsutaka : allpoint) 
+    if (matsutaka!=null) 
       if (matsutaka.parent[0] == _nearline
         |matsutaka.parent[1] == _nearline) {
-        online.add(matsutaka);
+        ketsudeka[count] = matsutaka;
+        count++;
       }
-    }
-  }
+  ten[] online = new ten[count];
+  for (int j = 0; j < count; j++) 
+    online[j] = ketsudeka[j];
+  return online;
 }

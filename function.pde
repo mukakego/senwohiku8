@@ -12,6 +12,11 @@ float distsq(ten _a, sen _b) {
 
 ten cross(sen _a, sen _b) {
   //二線の交点が一つだけある場合それを返す
+  // / ax + by = c
+  // \ dx + ey = f
+  //      <=
+  // / x \ _ / a b \-1/ c \
+  // \ y / - \ d e /  \ f /
   float 
     a = _a.a, b = _a.b, c = _a.c, 
     d = _b.a, e = _b.b, f = _b.c, 
@@ -19,24 +24,22 @@ ten cross(sen _a, sen _b) {
   if (determination == 0) {
     return null;
   } else {
-    float x = ( e * c - b * f) / determination;
-    float y = (-d * c + a * f) / determination;
+    float 
+      x = ( e * c - b * f) / determination, 
+      y = (-d * c + a * f) / determination;
     return new ten(x, y, _a, _b);
   }
 }
 
 boolean beyond(ten ten1, ten ten2, sen kijun) {
   //ten2がkijunを挟んでten1と反対側にあればtrueを返す
-  if (
-    ten2.parent[0] == kijun|
-    ten2.parent[1] == kijun) {
-    return false;
-  }
-  float hoge = kijun.a * ten1.x + kijun.b * ten1.y - kijun.c ;
-  float fuga = kijun.a * ten2.x + kijun.b * ten2.y - kijun.c ;
-  if (fuga<0&hoge>0 | fuga>0&hoge<0) {
-    return true;
-  } else {
-    return false;
-  }
+  //点がkijun上にある場合はしらなーい
+  if (ten2.parent[0] == kijun)return false;
+  if (ten2.parent[1] == kijun)return false;
+  float
+    hoge =
+    kijun.a * ten1.x + kijun.b * ten1.y - kijun.c, 
+    fuga =
+    kijun.a * ten2.x + kijun.b * ten2.y - kijun.c;
+  return fuga<0&hoge>0|fuga>0&hoge<0;
 }
